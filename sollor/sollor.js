@@ -16,9 +16,11 @@ function createVerticalScrubController({ mainVideo, player }) {
   scrubWrap.innerHTML = verticalScrubHtml;
   controls.appendChild(scrubWrap);
 
-  const center = document.getElementById('vs_center');
-  const tape = document.getElementById('vs_tape');
-  const tip = document.getElementById('vs_tip');
+  const center = scrubWrap.querySelector('#vs_center');
+  const tape = scrubWrap.querySelector('#vs_tape');
+  const tip = scrubWrap.querySelector('#vs_tip');
+
+  if (!center || !tape || !tip) return { init() {} };
 
   const STEP = 10;
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
@@ -127,7 +129,9 @@ function createVerticalScrubController({ mainVideo, player }) {
     if (mainVideo.readyState >= 1) onMeta();
 
     center.addEventListener('pointerdown', startDrag);
-    window.addEventListener('pointermove', (e) => { if (dragging) moveByPointer(e); }, { passive: false });
+    window.addEventListener('pointermove', (e) => {
+      if (dragging) moveByPointer(e);
+    }, { passive: false });
     window.addEventListener('pointerup', endDrag);
     window.addEventListener('pointercancel', endDrag);
 
