@@ -147,11 +147,53 @@ window.sollorCreatePlayer = function () {
   const player = new Plyr('#player', {
     hideControls: false,
     tooltips: { controls: true, seek: true },
+    fullscreen: {
+      enabled: true,
+      fallback: true,
+      iosNative: true
+    },
     previewThumbnails: {
       enabled: true,
-      src: 'https://cdn.plyr.io/static/demo/thumbs/240p.vtt'  // явный путь
+      src: 'https://cdn.plyr.io/static/demo/thumbs/240p.vtt'
     }
   });
+
+  const lockLandscape = async () => {
+    try {
+      if (screen.orientation && screen.orientation.lock) {
+        await screen.orientation.lock('landscape');
+      }
+    } catch (e) {}
+  };
+
+  const unlockOrientation = () => {
+    try {
+      if (screen.orientation && screen.orientation.unlock) {
+        screen.orientation.unlock();
+      }
+    } catch (e) {}
+  };
+
+  const forceLandscapeAfterFullscreen = () => {
+    setTimeout(() => {
+      lockLandscape();
+    }, 50);
+  };
+
+  player.on('enterfullscreen', () => {
+    forceLandscapeAfterFullscreen();
+  });
+
+  player.on('exitfullscreen', () => {
+    unlockOrientation();
+  });
+
+  const fsBtn = player.elements.container.querySelector('[data-plyr="fullscreen"]');
+  if (fsBtn) {
+    fsBtn.addEventListener('click', () => {
+      forceLandscapeAfterFullscreen();
+    }, { passive: true });
+  }
 
   const ctx = {
     player,
