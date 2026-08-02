@@ -30,6 +30,9 @@ body {
 
 .plyr {
   --plyr-color-main: #00e5ff;
+  --scrub-accent: #ffd400;
+  --scrub-tick: rgba(255, 255, 255, .75);
+  --scrub-tooltip-bg: rgba(0, 0, 0, .85);
   width: 100%;
   height: 100%;
 }
@@ -58,7 +61,6 @@ body {
     display: none !important;
   }
 
-  /* Важно: сам controls не должен перекрывать весь экран как "ловушка" */
   .plyr__controls {
     display: flex !important;
     flex-direction: column !important;
@@ -68,10 +70,9 @@ body {
     padding: 0 !important;
     overflow: visible !important;
     --plyr-control-spacing: 6px;
-    pointer-events: none !important; /* сквозной контейнер */
+    pointer-events: none !important;
   }
 
-  /* Но его дети остаются кликабельными */
   .plyr__controls > * {
     pointer-events: auto !important;
   }
@@ -97,7 +98,6 @@ body {
     order: 1 !important;
   }
 
-  /* Скраббар */
   .plyr__vertical-scrub {
     position: absolute;
     bottom: 80px;
@@ -106,7 +106,7 @@ body {
     z-index: 40;
     touch-action: none;
     user-select: none;
-    pointer-events: none; /* сам контейнер сквозной */
+    pointer-events: none;
   }
 
   .plyr__vertical-scrub.scrub--right {
@@ -119,7 +119,6 @@ body {
     right: auto;
   }
 
-  /* Только активная зона должна ловить события */
   .plyr__vertical-scrub__center {
     position: absolute;
     right: 0;
@@ -145,7 +144,7 @@ body {
     width: 18px;
     height: 2px;
     transform: translateX(-50%);
-    background: rgba(255, 255, 255, .75);
+    background: var(--scrub-tick);
     border-radius: 2px;
   }
 
@@ -153,38 +152,52 @@ body {
     opacity: .25;
   }
 
-  .plyr__vertical-scrub__marker {
+  .plyr__vertical-scrub__marker,
+  .plyr__vertical-scrub__time,
+  .plyr__vertical-scrub__tooltip {
     position: absolute;
     left: 50%;
+  }
+
+  .plyr__vertical-scrub__marker {
     top: 50%;
     transform: translate(-50%, -50%);
     width: 44px;
     height: 4px;
-    background: #ffd400;
+    background: var(--scrub-accent);
     border-radius: 3px;
     pointer-events: none;
   }
 
+  .plyr__vertical-scrub__time {
+    top: calc(50% + 18px);
+    transform: translateX(-50%);
+    pointer-events: none;
+    white-space: nowrap;
+    font-family: monospace;
+    color: var(--scrub-accent);
+    font-size: 13px;
+  }
+
   .plyr__vertical-scrub__tooltip {
-    position: absolute;
-    left: 0%;
     top: calc(50% - 18px);
     transform: translateX(-50%);
     padding: 6px 8px;
     border-radius: 6px;
-    background: rgba(0, 0, 0, .85);
-    color: #00e5ff;
+    background: var(--scrub-tooltip-bg);
+    color: var(--plyr-color-main);
     font-size: 12px;
     white-space: nowrap;
     pointer-events: none;
     display: none;
   }
 
-  .plyr__vertical-scrub:hover .plyr__vertical-scrub__tooltip {
-    display: block;
+  @media (hover: hover) {
+    .plyr__vertical-scrub:hover .plyr__vertical-scrub__tooltip {
+      display: block;
+    }
   }
 
-  /* Вертикальный блок кнопок */
   .plyr__mobile-vertical-panel {
     position: relative;
     display: flex;
@@ -192,13 +205,13 @@ body {
     gap: 10px;
     align-items: flex-end;
     z-index: 50;
-    pointer-events: none; /* контейнер сквозной */
+    pointer-events: none;
     margin-left: auto;
     margin-right: 12px;
   }
 
   .plyr__mobile-vertical-panel > * {
-    pointer-events: auto !important; /* но кнопки кликабельны */
+    pointer-events: auto !important;
   }
 
   .plyr__mobile-vertical-panel .plyr__control {
@@ -215,7 +228,6 @@ body {
     color: #00e5ff;
   }
 
-  /* Progress row */
   .plyr__mobile-progress-row {
     position: relative;
     width: 100%;
@@ -226,7 +238,7 @@ body {
     padding: 0 12px 12px;
     box-sizing: border-box;
     z-index: 20;
-    pointer-events: none; /* контейнер сквозной */
+    pointer-events: none;
   }
 
   .plyr__mobile-progress-row > * {
