@@ -6,12 +6,16 @@ const verticalScrubHtml = `
   <div class="plyr__vertical-scrub__tooltip" id="vs_tip">0:00</div>
 `;
 
+function isMobileTablet() {
+  return window.matchMedia('(max-width: 1024px)').matches;
+}
+
 function createVerticalScrubController({ mainVideo, player }) {
   const controls = player.elements.container.querySelector('.plyr__controls');
-  if (!controls) return { init() {} };
+  if (!controls) return { init() {}, scrubWrap: null };
 
   const scrubWrap = document.createElement('div');
-  scrubWrap.className = 'plyr__vertical-scrub';
+  scrubWrap.className = 'plyr__vertical-scrub scrub--right';
   scrubWrap.id = 'vs_wrap';
   scrubWrap.innerHTML = verticalScrubHtml;
   controls.appendChild(scrubWrap);
@@ -20,7 +24,7 @@ function createVerticalScrubController({ mainVideo, player }) {
   const tape = scrubWrap.querySelector('#vs_tape');
   const tip = scrubWrap.querySelector('#vs_tip');
 
-  if (!center || !tape || !tip) return { init() {} };
+  if (!center || !tape || !tip) return { init() {}, scrubWrap };
 
   const STEP = 10;
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
@@ -144,7 +148,59 @@ function createVerticalScrubController({ mainVideo, player }) {
     });
   };
 
-  return { init };
+  return { init, scrubWrap };
+}
+
+function createMobileLayout(player, scrubWrap) {
+  if (!isMobileTablet()) return;
+
+  const controls = player.elements.container.querySelector('.plyr__controls');
+  if (!controls) return;
+
+  const existingSettings = controls.querySelector('[data-plyr="settings"]');
+  const existingPip = controls.querySelector('[data-plyr="pip"]');
+  const existingFullscreen = controls.querySelector('[data-plyr="fullscreen"]');
+  const existingMute = controls.querySelector('[data-plyr="mute"]');
+  const existingCaptions = controls.querySelector('[data-plyr="captions"]');
+  const existingProgress = controls.querySelector('.plyr__progress__container');
+
+  const scrubRow = document.createElement('div');
+  scrubRow.className = 'plyr__mobile-scrub-row';
+
+  const buttonsRow = document.createElement('div');
+  buttonsRow.className = 'plyr__mobile-vertical-panel';
+
+  const progressRow = document.createElement('div');
+  progressRow.className = 'plyr__mobile-progress-row';
+
+  const toggleBtn = document.createElement('button');
+  toggleBtn.type = 'button';
+  toggleBtn.className = 'plyr__control plyr__control--toggle-scrub';
+  toggleBtn.setAttribute('aria-label', 'Переключить положение скраббара');
+  toggleBtn.setAttribute('title', 'Переключить положение скраббара');
+  toggleBtn.textContent = '⇄';
+
+  scrubRow.appendChild(scrubWrap);
+
+  buttonsRow.appendChild(toggleBtn);
+  if (existingMute) buttonsRow.appendChild(existingMute);
+  if (existingCaptions) buttonsRow.appendChild(existingCaptions);
+  if (existingSettings) buttonsRow.appendChild(existingSettings);
+  if (existingPip) buttonsRow.appendChild(existingPip);
+  if (existingFullscreen) buttonsRow.appendChild(existingFullscreen);
+
+  if (existingProgress) progressRow.appendChild(existingProgress);
+
+  controls.appendChild(scrubRow);
+  controls.appendChild(buttonsRow);
+  controls.appendChild(progressRow);
+
+  let currentSide = 'right';
+  toggleBtn.addEventListener('click', () => {
+    currentSide = currentSide === 'right' ? 'left' : 'right';
+    scrubWrap.classList.remove('scrub--left', 'scrub--right');
+    scrubWrap.classList.add(currentSide === 'left' ? 'scrub--left' : 'scrub--right');
+  });
 }
 
 window.sollorCreatePlayer = function () {
@@ -156,10 +212,18 @@ window.sollorCreatePlayer = function () {
       fallback: true,
       iosNative: true
     },
-    previewThumbnails: {
-      enabled: true,
-      src: 'https://cdn.plyr.io/static/demo/thumbs/240p.vtt'
-    }
+    controls: [
+      'play-large',
+      'play',
+      'progress',
+      'current-time',
+      'mute',
+      'volume',
+      'captions',
+      'settings',
+      'pip',
+      'fullscreen'
+    ]
   });
 
   const lockLandscape = async () => {
@@ -199,13 +263,13 @@ window.sollorCreatePlayer = function () {
     }, { passive: true });
   }
 
-  const ctx = {
-    player,
-    mainVideo: document.getElementById('player')
-  };
-
-  const scrub = createVerticalScrubController(ctx);
+  const mainVideo = document.getElementById('player');
+  const scrub = createVerticalScrubController({ mainVideo, player });
   scrub.init();
+
+  if (scrub.scrubWrap) {
+    createMobileLayout(player, scrub.scrubWrap);
+  }
 
   return player;
 };
