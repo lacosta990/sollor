@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plyr Working Version</title>
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
+  <link rel="stylesheet" href="./sollor.css">
+</head>
+<body>
+  <div id="container">
+    <div class="player-shell">
+      <video
+        id="player"
+        class="player-main"
+        playsinline
+        controls
+        crossorigin
+        data-poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg"
+      >
+        <source
+          src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4"
+          type="video/mp4"
+          size="1080"
+        />
+        <source
+          src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4"
+          type="video/mp4"
+          size="576"
+        />
+        <track
+          kind="captions"
+          label="English"
+          srclang="en"
+          src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt"
+          default
+        />
+      </video>
+
+      <video
+        id="player-low"
+        class="player-low"
+        playsinline
+        muted
+        preload="auto"
+        crossorigin
+      >
+        <source
+          src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4"
+          type="video/mp4"
+        />
+      </video>
+    </div>
+  </div>
+
+  <script src="https://cdn.plyr.io/3.8.4/plyr.polyfilled.js"></script>
+  <script src="./sollor.js"></script>
+</body>
+</html>

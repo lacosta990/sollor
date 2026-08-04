@@ -1,9 +1,5 @@
 const controlsHtml = ({ id, title }) => `
-<div class="plyr__controls">
-
-  <div class="controls-content">
-
-    <!-- Вертикальный скраб -->
+  <div class="plyr__controls">
     <div class="plyr__vertical-scrub" id="vs_wrap">
       <div class="plyr__vertical-scrub__center" id="vs_center">
         <div class="plyr__vertical-scrub__tape" id="vs_tape"></div>
@@ -13,34 +9,13 @@ const controlsHtml = ({ id, title }) => `
       <div class="plyr__vertical-scrub__tooltip" id="vs_tip">0:00</div>
     </div>
 
-    <!-- Контейнер для остальных элементов -->
-    <div class="controls-buttons">
-      <button type="button" class="plyr__control" data-plyr="play" aria-label="Play, ${title}">
-        <svg class="icon--pressed" role="presentation"><use xlink:href="#plyr-pause"></use></svg>
-        <svg class="icon--not-pressed" role="presentation"><use xlink:href="#plyr-play"></use></svg>
-        <span class="label--pressed plyr__tooltip" role="tooltip">Pause</span>
-        <span class="label--not-pressed plyr__tooltip" role="tooltip">Play</span>
-      </button>
+    <button type="button" class="plyr__control" data-plyr="play" aria-label="Play, ${title}">
+      <svg class="icon--pressed" role="presentation"><use xlink:href="#plyr-pause"></use></svg>
+      <svg class="icon--not-pressed" role="presentation"><use xlink:href="#plyr-play"></use></svg>
+      <span class="label--pressed plyr__tooltip" role="tooltip">Pause</span>
+      <span class="label--not-pressed plyr__tooltip" role="tooltip">Play</span>
+    </button>
 
-      <div class="plyr__volume">
-        <input data-plyr="volume" type="range" min="0" max="1" step="0.05" value="1" autocomplete="off" aria-label="Volume">
-      </div>
-
-      <button type="button" class="plyr__control" data-plyr="mute">
-        <svg role="presentation"><use xlink:href="#plyr-muted"></use></svg>
-        <span class="plyr__tooltip">Mute</span>
-      </button>
-
-      <button type="button" class="plyr__control" data-plyr="fullscreen">
-        <svg role="presentation"><use xlink:href="#plyr-enter-fullscreen"></use></svg>
-        <span class="plyr__tooltip">Fullscreen</span>
-      </button>
-    </div>
-
-    
-  </div>
-  <!-- Горизонтальный прогресс -->
-  <div class='progress-content'>
     <div class="plyr__progress">
       <label for="seek${id}" class="plyr__sr-only">Seek</label>
       <input data-plyr="seek" id="seek${id}" type="range" min="0" max="100" step="0.01" value="0" aria-label="Seek">
@@ -50,11 +25,22 @@ const controlsHtml = ({ id, title }) => `
 
     <div class="plyr__time plyr__time--current" aria-label="Current time">00:00</div>
     <div class="plyr__time plyr__time--duration" aria-label="Duration">00:00</div>
-  </div>
-</div>
-`;
 
-// Остальные части кода остаются без изменений
+    <button type="button" class="plyr__control" data-plyr="mute">
+      <svg role="presentation"><use xlink:href="#plyr-muted"></use></svg>
+      <span class="plyr__tooltip">Mute</span>
+    </button>
+
+    <div class="plyr__volume">
+      <input data-plyr="volume" type="range" min="0" max="1" step="0.05" value="1" autocomplete="off" aria-label="Volume">
+    </div>
+
+    <button type="button" class="plyr__control" data-plyr="fullscreen">
+      <svg role="presentation"><use xlink:href="#plyr-enter-fullscreen"></use></svg>
+      <span class="plyr__tooltip">Fullscreen</span>
+    </button>
+  </div>
+`;
 
 const player = new Plyr('#player', {
   controls: controlsHtml,
