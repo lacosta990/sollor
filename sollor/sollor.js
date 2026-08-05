@@ -9,7 +9,7 @@ const controlsHtml = ({ id, title }) => `
         <div class="plyr__vertical-scrub__tape" id="vs_tape"></div>
         <div class="plyr__vertical-scrub__marker"></div>
       </div>
-      <div class="plyr__vertical-scrub__time" id="vs_time">0:00</div>
+     
       <div class="plyr__vertical-scrub__tooltip" id="vs_tip">0:00</div>
     </div>
 
@@ -22,9 +22,7 @@ const controlsHtml = ({ id, title }) => `
         <span class="label--not-pressed plyr__tooltip" role="tooltip">Play</span>
       </button>
 
-      <div class="plyr__volume">
-        <input data-plyr="volume" type="range" min="0" max="1" step="0.05" value="1" autocomplete="off" aria-label="Volume">
-      </div>
+     
 
       <button type="button" class="plyr__control" data-plyr="mute">
         <svg role="presentation"><use xlink:href="#plyr-muted"></use></svg>
@@ -96,10 +94,11 @@ const setLowRes = (on) => {
 document.addEventListener('DOMContentLoaded', () => {
   const center = document.getElementById('vs_center');
   const tape = document.getElementById('vs_tape');
-  const timeEl = document.getElementById('vs_time');
+  // const timeEl = document.getElementById('vs_time'); <-- удалён
   const tip = document.getElementById('vs_tip');
 
-  if (!center || !tape || !timeEl || !tip) return;
+  // Проверка без timeEl
+  if (!center || !tape || !tip) return;
 
   let dragging = false;
   let startY = 0;
@@ -153,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const p = current / d;
     offset = p * (half * 2);
     tape.style.transform = `translate(-50%, calc(-50% + ${half - offset}px))`;
-    timeEl.textContent = fmt(current);
+    // timeEl.textContent = fmt(current); <-- удалён
     setLowRes(!isBuffered(current) || current >= d * 0.85);
   };
 
